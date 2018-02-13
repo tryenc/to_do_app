@@ -6,6 +6,7 @@ var todo = file.todo;
 var todos = file.todos;
 var visibilityFilter = file.visibilityFilter;
 var combineReducers = file.combineReducers;
+var createStore = file.createStore;
 
 describe('todo reducer', function() {
 	var testTodo = {
@@ -271,6 +272,93 @@ describe('combineReducers', function() {
 			'"visibilityFilter" and "todos"', function() {
 			expect(returnedState).to.have.property('todos');
 			expect(returnedState).to.have.property('visibilityFilter');
+		});
+	});
+});
+
+describe('createStore', function() {
+	var combinedReducers = combineReducers({
+		todos: todos,
+		visibilityFilter: visibilityFilter
+	});
+	var reducersSpy = sinon.spy(combinedReducers);
+	var returnedStore = createStore(reducersSpy);
+
+	it('returns an object with the methods "getState", "dispatch", and "subscribe"', function() {
+		expect(returnedStore).to.be.an.instanceof(Object);
+
+		expect(returnedStore.getState).to.be.an.instanceof(Function);
+		expect(returnedStore.dispatch).to.be.an.instanceof(Function);
+		expect(returnedStore.subscribe).to.be.an.instanceof(Function);
+	});
+
+	it('initializes state to its default value by calling the reducers', function() {
+		var defaultState = {
+			todos: [],
+			visibilityFilter: 'SHOW_ALL'
+		};
+
+		expect(returnedStore.getState()).to.deep.equal(defaultState);
+		expect(reducersSpy.calledOnce).to.be.true;
+	});
+
+	describe('subscribe', function() {
+		var mockAction = {
+			type: 'IRRELEVANT'
+		};
+		it('takes a callback function which will be invoked each time an action ' +
+			'is dispatched', function(done) {
+			var mockCallback = function() {
+				removeCallback();
+				done();
+			};
+			var removeCallback = returnedStore.subscribe(mockCallback);
+			returnedStore.dispatch(mockAction);
+		});
+
+		it('returns a function for removing the listener which it was called with', function() {
+			var mockCallback = sinon.spy();
+
+			var removeListener = returnedStore.subscribe(mockCallback);
+			returnedStore.dispatch(mockAction);
+			expect(mockCallback.calledOnce).to.be.true;
+
+			removeListener();
+			returnedStore.dispatch(mockAction);
+			expect(mockCallback.calledTwice).to.be.false;
+		});
+	});
+
+	describe('dispatch', function() {
+		var mockAction = {
+			type: 'IRRELEVANT'
+		};
+		it('calls the reducer passed to createStore with the arguments state and ' +
+			'the action passed to it', function() {
+			reducersSpy.resetHistory();
+			expect(reducersSpy.notCalled).to.be.true;
+			var state = returnedStore.getState();
+
+			returnedStore.dispatch(mockAction);
+			expect(reducersSpy.calledOnce).to.be.true;
+			expect(reducersSpy.args[0]).to.deep.include(state);
+			expect(reducersSpy.args[0]).to.deep.include(mockAction);
+		});
+
+		it('calls every callback which was registered with subscribe', function() {
+			var mockCallback1 = sinon.spy();
+			var mockCallback2 = sinon.spy();
+
+			var unsubscribe1 = returnedStore.subscribe(mockCallback1);
+			var unsubscribe2 = returnedStore.subscribe(mockCallback2);
+
+			returnedStore.dispatch(mockAction);
+
+			expect(mockCallback1.calledOnce).to.be.true;
+			expect(mockCallback2.calledOnce).to.be.true;
+
+			unsubscribe1();
+			unsubscribe2();
 		});
 	});
 });

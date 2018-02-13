@@ -6,24 +6,31 @@
 		.completed {
 			text-decoration: line-through;
 		}
-
-		ul.show-completed li.incomplete {
-			display: none;
-		}
-
-		ul.show-incomplete li.completed {
-			display: none;
-		}
 	</style>
 </head>
 <body>
 	<input id="text" type="text"></input>
-	<button id="add" type="button">Add To Do</button>
-	<button id="all" type="button">Show All</button>
-	<button id="completed" type="button">Show Completed</button>
-	<button id="incomplete" type="button">Show Incomplete</button>
+	<button id="add"
+		type="button">
+		Add To Do
+	</button>
+	<input type="radio"
+		checked
+		name="filter"
+		onclick="setFilter('SHOW_ALL')">
+		Show All
+	</input>
+	<input type="radio"
+		name="filter"
+		onclick="setFilter('SHOW_COMPLETED')">
+		Show Completed
+	</input>
+	<input type="radio"
+		name="filter"
+		onclick="setFilter('SHOW_INCOMPLETE')">
+		Show Incomplete
+	</input>
 	<ul id="todos"></ul>
-	<script src="/node_modules/redux/dist/redux.js"></script>
 	<script src="index.js"></script>
 </body>
 </html>

@@ -1,9 +1,8 @@
 // 'use strict' is explicitly being used so that any attempts
 // to modify an object after it's been frozen will throw an error
 'use strict';
-// var Redux = require('redux');
 
-// ********* REDUCERS *********
+// ***************** REDUCERS *****************
 var todos = function(state, action) {
   state = state || [];
   switch (action.type) {
@@ -79,6 +78,48 @@ var todoApp = combineReducers({
   visibilityFilter: visibilityFilter
 });
 
+// ********* ACTION CREATORS *********
+
+
+// ********* REDUX STORE *********
+var createStore = function(reducer) {
+  var state;
+  var listeners = [];
+
+  var getState = function() {
+    return state;
+  };
+
+  var dispatch = function(action) {
+    state = reducer(state, action);
+    listeners.forEach(function(listener) {
+      listener();
+    });
+  };
+
+  var subscribe = function(listener) {
+    listeners.push(listener);
+
+    return function() {
+      listeners = listeners.filter(function(l) {
+        l !== listener;
+      });
+    }
+  };
+
+  dispatch({});
+
+  return {
+    getState: getState,
+    dispatch: dispatch,
+    subscribe: subscribe
+  };
+}
+
+var store = createStore(todoApp);
+
+// ****** Functions for manipulating DOM ******
+
 var todoId = 0;
 
 var addTodo = function() {
@@ -101,77 +142,71 @@ document.addEventListener('keypress', function(event) {
   }
 });
 
-document.getElementById('all').addEventListener('click', function() {
+function setFilter(filter) {
   store.dispatch({
     type: 'SET_VISIBILITY_FILTER',
-    filter: 'SHOW_ALL'
+    filter: filter
   });
-});
+}
 
-document.getElementById('completed').addEventListener('click', function() {
-  store.dispatch({
-    type: 'SET_VISIBILITY_FILTER',
-    filter: 'SHOW_COMPLETED'
+var createListItem = function(todo) {
+  var li = document.createElement('li');
+  var liText = document.createTextNode(todo.text);
+  li.appendChild(liText);
+  li.addEventListener('click', function() {
+    store.dispatch({
+      type: 'TOGGLE_TODO',
+      id: todo.id
+    });
   });
-});
+  if (todo.completed) {
+    li.classList.add('completed')
+  }
 
-document.getElementById('incomplete').addEventListener('click', function() {
-  store.dispatch({
-    type: 'SET_VISIBILITY_FILTER',
-    filter: 'SHOW_INCOMPLETE'
-  });
-});
+  return li;
+}
 
-// ********* REDUX *********
-var createStore = Redux.createStore;
-var store = createStore(todoApp);
-
-var render = function() {
-  var state = store.getState();
+var clearListItemsFromList = function() {
   var ul = document.getElementById('todos');
 
   while (ul.firstChild) {
     ul.removeChild(ul.firstChild);
-  }
+  };
 
-  state.todos.forEach(function(todo) {
-    var li = document.createElement('li');
-    var liText = document.createTextNode(todo.text);
-    li.appendChild(liText);
-    li.addEventListener('click', function() {
-      store.dispatch({
-        type: 'TOGGLE_TODO',
-        id: todo.id
-      });
-    });
-    if (todo.completed) {
-      li.classList.add('completed')
-    } else {
-      li.classList.add('incomplete')
-    }
-    ul.appendChild(li);
-  });
+  return ul;
+};
 
-  switch (state.visibilityFilter) {
+var getVisibleTodos = function(todos, filter) {
+  switch (filter) {
     case 'SHOW_COMPLETED':
-      ul.classList.remove('show-incomplete');
-      ul.classList.add('show-completed');
-      break;
+      return todos.filter(function(todo) {
+        return todo.completed;
+      });
     case 'SHOW_INCOMPLETE':
-      ul.classList.remove('show-completed');
-      ul.classList.add('show-incomplete');
-      break;
+      return todos.filter(function(todo) {
+        return !todo.completed;
+      });
     case 'SHOW_ALL':
     default:
-      ul.classList.remove('show-completed', 'show-incomplete');
-      break;
+      return todos;
   }
 };
 
-store.subscribe(render);
+var render = function() {
+  var state = store.getState();
+  var ul = clearListItemsFromList();
+  var todos = getVisibleTodos(state.todos, state.visibilityFilter);
 
+  todos.forEach(function(todo) {
+    var li = createListItem(todo);
+    ul.appendChild(li);
+  });
+};
+
+store.subscribe(render);
 // module.exports = {
 //   combineReducers: combineReducers,
+//   createStore: createStore,
 //   todo: todo,
 //   todos: todos,
 //   visibilityFilter: visibilityFilter,
