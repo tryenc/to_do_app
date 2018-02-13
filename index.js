@@ -1,35 +1,37 @@
+// 'use strict' is explicitly being used so that any attempts
+// to modify an object after it's been frozen will throw an error
 'use strict';
-var Redux = require('redux');
+// var Redux = require('redux');
 
 // ********* REDUCERS *********
-var todosReducer = function(state, action) {
+var todos = function(state, action) {
   state = state || [];
   switch (action.type) {
     case 'ADD_TODO':
-       return state.concat(todoReducer(null, action));
+       return state.concat(todo(null, action));
     case 'TOGGLE_TODO':
-      return state.map(function(todo) {
-        return todoReducer(todo, action)
+      return state.map(function(t) {
+        return todo(t, action)
       })
     default:
        return state;
   }
 };
 
-var todoReducer = function(todo, action) {
+var todo = function(t, action) {
   switch (action.type) {
     case 'TOGGLE_TODO':
-      if (todo.id === action.id) {
+      if (t.id === action.id) {
         return Object.assign(
           {},
-          todo,
+          t,
           {
-            completed: !todo.completed
+            completed: !t.completed
           }
         );
       }
 
-      return todo;
+      return t;
 
     case 'ADD_TODO':
       return {
@@ -38,11 +40,11 @@ var todoReducer = function(todo, action) {
         completed: false
       };
     default:
-      return todo;
+      return t;
   }
 }
 
-var visibilityFilterReducer = function(state, action) {
+var visibilityFilter = function(state, action) {
   state = state || 'SHOW_ALL';
   switch (action.type) {
     case 'SET_VISIBILITY_FILTER':
@@ -52,10 +54,15 @@ var visibilityFilterReducer = function(state, action) {
   }
 }
 
+// "reducers" would be:
+// {
+//  todos: todosReducer,
+//  visibilityFilter: visibilityFilterReducer
+// }
 var combineReducers = function(reducers) {
   return function(state, action) {
     state = state || {};
-    // returns ['todos', 'visibilityFilter']
+    // Object.keys would be ['todos', 'visibilityFilter']
     return Object.keys(reducers)
        .reduce(function(nextState, stateField) {
          nextState[stateField] = reducers[stateField](
@@ -68,15 +75,50 @@ var combineReducers = function(reducers) {
 }
 
 var todoApp = combineReducers({
-  todos: todosReducer,
-  visibilityFilter: visibilityFilterReducer
+  todos: todos,
+  visibilityFilter: visibilityFilter
 });
 
 var createStore = Redux.createStore;
 var store = createStore(todoApp);
 
-module.exports = {
-  todoReducer: todoReducer,
-  todosReducer: todosReducer,
-  visibilityFilterReducer: visibilityFilterReducer,
+var render = function() {
+  var state = store.getState();
+  var ul = document.getElementById('todos');
+
+  while (ul.firstChild) {
+    ul.removeChild(ul.firstChild);
+  }
+
+  state.todos.forEach(function(todo) {
+    var li = document.createElement('li');
+    var liText = document.createTextNode(todo.text);
+    li.appendChild(liText);
+    ul.appendChild(li);
+  });
 };
+
+var todoId = 0;
+
+document.getElementById('add').addEventListener('click', function() {
+  // console.log('click');
+  var input = document.getElementById('text');
+  var text = input.value;
+  store.dispatch({
+    type: 'ADD_TODO',
+    id: todoId,
+    text: text
+  });
+
+  input.value = '';
+  todoId = todoId + 1;
+});
+
+store.subscribe(render);
+
+// module.exports = {
+//   combineReducers: combineReducers,
+//   todo: todo,
+//   todos: todos,
+//   visibilityFilter: visibilityFilter,
+// };
