@@ -79,6 +79,50 @@ var todoApp = combineReducers({
   visibilityFilter: visibilityFilter
 });
 
+var todoId = 0;
+
+var addTodo = function() {
+  var input = document.getElementById('text');
+  var text = input.value;
+  store.dispatch({
+    type: 'ADD_TODO',
+    id: todoId,
+    text: text
+  });
+
+  input.value = '';
+  todoId = todoId + 1;
+};
+
+document.getElementById('add').addEventListener('click', addTodo);
+document.addEventListener('keypress', function(event) {
+  if (event.key === 'Enter') {
+    addTodo();
+  }
+});
+
+document.getElementById('all').addEventListener('click', function() {
+  store.dispatch({
+    type: 'SET_VISIBILITY_FILTER',
+    filter: 'SHOW_ALL'
+  });
+});
+
+document.getElementById('completed').addEventListener('click', function() {
+  store.dispatch({
+    type: 'SET_VISIBILITY_FILTER',
+    filter: 'SHOW_COMPLETED'
+  });
+});
+
+document.getElementById('incomplete').addEventListener('click', function() {
+  store.dispatch({
+    type: 'SET_VISIBILITY_FILTER',
+    filter: 'SHOW_INCOMPLETE'
+  });
+});
+
+// ********* REDUX *********
 var createStore = Redux.createStore;
 var store = createStore(todoApp);
 
@@ -94,25 +138,35 @@ var render = function() {
     var li = document.createElement('li');
     var liText = document.createTextNode(todo.text);
     li.appendChild(liText);
+    li.addEventListener('click', function() {
+      store.dispatch({
+        type: 'TOGGLE_TODO',
+        id: todo.id
+      });
+    });
+    if (todo.completed) {
+      li.classList.add('completed')
+    } else {
+      li.classList.add('incomplete')
+    }
     ul.appendChild(li);
   });
+
+  switch (state.visibilityFilter) {
+    case 'SHOW_COMPLETED':
+      ul.classList.remove('show-incomplete');
+      ul.classList.add('show-completed');
+      break;
+    case 'SHOW_INCOMPLETE':
+      ul.classList.remove('show-completed');
+      ul.classList.add('show-incomplete');
+      break;
+    case 'SHOW_ALL':
+    default:
+      ul.classList.remove('show-completed', 'show-incomplete');
+      break;
+  }
 };
-
-var todoId = 0;
-
-document.getElementById('add').addEventListener('click', function() {
-  // console.log('click');
-  var input = document.getElementById('text');
-  var text = input.value;
-  store.dispatch({
-    type: 'ADD_TODO',
-    id: todoId,
-    text: text
-  });
-
-  input.value = '';
-  todoId = todoId + 1;
-});
 
 store.subscribe(render);
 

@@ -2,13 +2,26 @@
 <html>
 <head>
 	<title>To Do App with Redux</title>
+	<style>
+		.completed {
+			text-decoration: line-through;
+		}
+
+		ul.show-completed li.incomplete {
+			display: none;
+		}
+
+		ul.show-incomplete li.completed {
+			display: none;
+		}
+	</style>
 </head>
 <body>
 	<input id="text" type="text"></input>
 	<button id="add" type="button">Add To Do</button>
-	<button type="button">Show All</button>
-	<button type="button">Show Completed</button>
-	<button type="button">Show Incomplete</button>
+	<button id="all" type="button">Show All</button>
+	<button id="completed" type="button">Show Completed</button>
+	<button id="incomplete" type="button">Show Incomplete</button>
 	<ul id="todos"></ul>
 	<script src="/node_modules/redux/dist/redux.js"></script>
 	<script src="index.js"></script>
