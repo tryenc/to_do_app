@@ -79,7 +79,21 @@ var todoApp = combineReducers({
 });
 
 // ********* ACTION CREATORS *********
+var todoId = 0;
+var addTodo = function(text) {
+  return {
+    type: 'ADD_TODO',
+    id: todoId++,
+    text: text
+  };
+};
 
+var setVisibilityFilter = function(filter) {
+  return {
+    type: 'SET_VISIBILITY_FILTER',
+    filter: filter
+  };
+};
 
 // ********* REDUX STORE *********
 var createStore = function(reducer) {
@@ -120,33 +134,25 @@ var store = createStore(todoApp);
 
 // ****** Functions for manipulating DOM ******
 
-var todoId = 0;
-
-var addTodo = function() {
+var addTodoListItem = function() {
   var input = document.getElementById('text');
   var text = input.value;
-  store.dispatch({
-    type: 'ADD_TODO',
-    id: todoId,
-    text: text
-  });
+
+  store.dispatch(addTodo(text));
 
   input.value = '';
   todoId = todoId + 1;
 };
 
-document.getElementById('add').addEventListener('click', addTodo);
+document.getElementById('add').addEventListener('click', addTodoListItem);
 document.addEventListener('keypress', function(event) {
   if (event.key === 'Enter') {
-    addTodo();
+    addTodoListItem();
   }
 });
 
 function setFilter(filter) {
-  store.dispatch({
-    type: 'SET_VISIBILITY_FILTER',
-    filter: filter
-  });
+  store.dispatch(setVisibilityFilter(filter));
 }
 
 var createListItem = function(todo) {
@@ -204,10 +210,10 @@ var render = function() {
 };
 
 store.subscribe(render);
-// module.exports = {
-//   combineReducers: combineReducers,
-//   createStore: createStore,
-//   todo: todo,
-//   todos: todos,
-//   visibilityFilter: visibilityFilter,
-// };
+module.exports = {
+  combineReducers: combineReducers,
+  createStore: createStore,
+  todo: todo,
+  todos: todos,
+  visibilityFilter: visibilityFilter,
+};
