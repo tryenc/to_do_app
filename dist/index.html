@@ -15,22 +15,22 @@
 		Add To Do
 	</button>
 	<input type="radio"
+		data-filter="SHOW_ALL"
 		checked
-		name="filter"
-		onclick="setFilter('SHOW_ALL')">
+		name="filter">
 		Show All
 	</input>
 	<input type="radio"
-		name="filter"
-		onclick="setFilter('SHOW_COMPLETED')">
+		data-filter="SHOW_COMPLETED"
+		name="filter">
 		Show Completed
 	</input>
 	<input type="radio"
-		name="filter"
-		onclick="setFilter('SHOW_INCOMPLETE')">
+		data-filter="SHOW_INCOMPLETE"
+		name="filter">
 		Show Incomplete
 	</input>
 	<ul id="todos"></ul>
-	<script src="index.js"></script>
+	<script src="bundle.js"></script>
 </body>
 </html>
