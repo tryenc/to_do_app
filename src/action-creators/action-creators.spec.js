@@ -6,6 +6,7 @@ var sinon = require('sinon');
 var actionCreators = require('./action-creators.js');
 var addTodo = actionCreators.addTodo;
 var setVisibilityFilter = actionCreators.setVisibilityFilter;
+var toggleTodo = actionCreators.toggleTodo;
 
 describe('action creators', function() {
 	describe('addTodo', function() {
@@ -40,6 +41,20 @@ describe('action creators', function() {
 		it('returns an object with the property "filter" set to the filter ' +
 			'that was passed as an argument', function() {
 			expect(setVisibilityFilterAction).to.have.property('filter', filterArgument);
+		});
+	});
+
+	describe('toggleTodo', function() {
+		var todoId = 1;
+		var toggleTodoAction = toggleTodo(todoId);
+
+		it('returns an object with the property "type" set to "TOGGLE_TODO"', function() {
+			expect(toggleTodoAction).to.have.property('type', 'TOGGLE_TODO');
+		});
+
+		it('returns an object with the property "id" set to the id ' +
+			'that was passed as an argument', function() {
+			expect(toggleTodoAction).to.have.property('id', todoId);
 		});
 	});
 });

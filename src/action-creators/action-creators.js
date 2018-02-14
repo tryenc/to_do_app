@@ -1,3 +1,5 @@
+'use strict';
+
 var todoId = 0;
 var addTodo = function(text) {
   return {
@@ -14,7 +16,15 @@ var setVisibilityFilter = function(filter) {
   };
 };
 
+var toggleTodo = function(id) {
+  return {
+    type: 'TOGGLE_TODO',
+    id: id
+  };
+};
+
 module.exports = {
 	addTodo: addTodo,
-	setVisibilityFilter: setVisibilityFilter
+	setVisibilityFilter: setVisibilityFilter,
+  toggleTodo: toggleTodo
 };
