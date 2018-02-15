@@ -2,25 +2,15 @@
 
 var todoId = 0;
 var addTodo = function(text) {
-  return {
-    type: 'ADD_TODO',
-    id: todoId++,
-    text: text
-  };
+  // Create an 'ADD_TODO' action
 };
 
 var setVisibilityFilter = function(filter) {
-  return {
-    type: 'SET_VISIBILITY_FILTER',
-    filter: filter
-  };
+  // Create a 'SET_VISIBILITY_' action
 };
 
 var toggleTodo = function(id) {
-  return {
-    type: 'TOGGLE_TODO',
-    id: id
-  };
+  // Create a 'TOGGLE_TODO' action
 };
 
 module.exports = {
