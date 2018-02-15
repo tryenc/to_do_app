@@ -8,10 +8,10 @@ var visibilityFilter = reducers.visibilityFilter;
 // Reduxfi Functions
 var reduxfi = require('./reduxfi/reduxfi.js');
 var combineReducers = reduxfi.combineReducers;
-// var createStore = reduxfi.createStore;
+var createStore = reduxfi.createStore; // to utilize the extension, comment this out
 
 // Redux Functions
-var createStore = require('redux').createStore;
+// var createStore = require('redux').createStore; // to utilize the extension, uncomment this
 
 // Action Creators
 var actionCreators = require('./action-creators/action-creators.js');
@@ -32,8 +32,22 @@ var todoApp = combineReducers({
   visibilityFilter: visibilityFilter
 });
 
+
 var store = createStore(
 	todoApp,
+	/*
+		The code below intergrates the Redux DevTool extension.
+		To use this extension in your chrome devTools, you'll need
+		to add the extension in the chrome web store:
+		https://chrome.google.com/webstore/category/extensions
+
+		This extension only works if we utilize Redux's createStore function
+		rather than the one that we created. To do so, comment out line 11
+		and uncomment line 14.
+
+		For more information on this extension, please see:
+		https://github.com/zalmoxisus/redux-devtools-extension
+	*/
 	window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 
