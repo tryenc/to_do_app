@@ -5,10 +5,13 @@ var reducers = require('./reducers/reducers.js');
 var todos = reducers.todos;
 var visibilityFilter = reducers.visibilityFilter;
 
+// Reduxfi Functions
+var reduxfi = require('./reduxfi/reduxfi.js');
+var combineReducers = reduxfi.combineReducers;
+// var createStore = reduxfi.createStore;
+
 // Redux Functions
-var redux = require('./redux/redux.js');
-var combineReducers = redux.combineReducers;
-var createStore = redux.createStore;
+var createStore = require('redux').createStore;
 
 // Action Creators
 var actionCreators = require('./action-creators/action-creators.js');
@@ -29,7 +32,10 @@ var todoApp = combineReducers({
   visibilityFilter: visibilityFilter
 });
 
-var store = createStore(todoApp);
+var store = createStore(
+	todoApp,
+	window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+);
 
 setListenersForAddTodo(store);
 setListenersForFilter(store);

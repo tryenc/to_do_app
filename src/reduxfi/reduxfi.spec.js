@@ -3,7 +3,7 @@ var expect = require('chai').expect;
 var sinon = require('sinon');
 
 // Functions to Test
-var redux = require('./redux.js');
+var redux = require('./reduxfi.js');
 var combineReducers = redux.combineReducers;
 var createStore = redux.createStore;
 
