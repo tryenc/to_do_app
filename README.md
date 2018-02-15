@@ -5,10 +5,10 @@ This app covers some of the fundamental features of Redux including:
 - actions
 - action creators
 
-In the interest of having a deeper understand of Redux's functionality, this app create some of Redux's most important functions from scratch, including the functions `createStore` and `combineReducers`.
+In the interest of having a deeper understand of Redux's functionality, this app creates some of Redux's most important functions from scratch, including the functions `createStore` and `combineReducers`.
 
 This app borrows heavily from a video series (especially episodes 1 - 17) produced by the creator of Redux, Dan Abramov.
-The series is hosted by egghead.io and is free to watch. Please find the videos here: https://egghead.io/courses/getting-started-with-redux. This application departs from the Redux videos in so far as it uses vanilla JS to manipulate the DOM rather than React.
+The series is hosted by egghead.io and is available to watch for free at https://egghead.io/courses/getting-started-with-redux. This application departs from the Redux videos in so far as it uses vanilla JS to manipulate the DOM rather than React.
 # Serve
 To serve the app, use `npm run serve`.
 This app uses webpack to bundle the code and webpack-dev-server to serve it.
