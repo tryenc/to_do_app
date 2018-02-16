@@ -1,20 +1,30 @@
 'use strict';
 
+/**
+ * A function for combining reducers which manage
+ * disparate parts of state and returns a reducer which
+ * manages all of state.
+ * @param  {Object} reducers - an object with keys
+ *   corresponding to parts of state and values
+ *   corresponding to the reducers which will
+ *   manage those parts of state
+ * @return {Function} - a reducer which combines the
+ *   reducers that were passed to it
+ * @example
+ * function(state, action) {
+ *   state = state || {};
+ * }
+ */
 var combineReducers = function(reducers) {
-  return function(state, action) {
-    state = state || {};
-    // Object.keys would be ['todos', 'visibilityFilter']
-    return Object.keys(reducers)
-       .reduce(function(nextState, stateField) {
-         nextState[stateField] = reducers[stateField](
-           state[stateField],
-           action
-         );
-        return nextState;
-    }, {})
-  }
+  // Your code here
 }
 
+/**
+ * A function which takes a reducer and returns
+ * a store for holding state.
+ * @param  {Function} reducer - a reducer for managing
+ * @return {[type]}         [description]
+ */
 var createStore = function(reducer) {
   var state;
   var listeners = [];
@@ -40,6 +50,7 @@ var createStore = function(reducer) {
     }
   };
 
+  // Initializes state
   dispatch({});
 
   return {
