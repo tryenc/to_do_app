@@ -6,41 +6,31 @@ var todos = function(state, action) {
   state = state || [];
   switch (action.type) {
     case 'ADD_TODO':
-       return state.concat(todo(null, action));
+      return state.concat(
+        {
+          id: action.id,
+          text: action.text,
+          completed: false
+        }
+      );
     case 'TOGGLE_TODO':
-      return state.map(function(t) {
-        return todo(t, action)
-      })
+      return state.map(function(todo) {
+        if (todo.id === action.id) {
+          return Object.assign(
+            {},
+            todo,
+            {
+              completed: !todo.completed,
+            }
+          );
+        }
+        return todo;
+      });
+      // This won't work because it mutates state
     default:
        return state;
   }
 };
-
-var todo = function(t, action) {
-  switch (action.type) {
-    case 'TOGGLE_TODO':
-      if (t.id === action.id) {
-        return Object.assign(
-          {},
-          t,
-          {
-            completed: !t.completed
-          }
-        );
-      }
-
-      return t;
-
-    case 'ADD_TODO':
-      return {
-        id: action.id,
-        text: action.text,
-        completed: false
-      };
-    default:
-      return t;
-  }
-}
 
 var visibilityFilter = function(state, action) {
   state = state || 'SHOW_ALL';
@@ -53,7 +43,6 @@ var visibilityFilter = function(state, action) {
 }
 
 module.exports = {
-  todo: todo,
   todos: todos,
   visibilityFilter: visibilityFilter
 };
