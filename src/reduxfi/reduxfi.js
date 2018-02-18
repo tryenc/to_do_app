@@ -27,27 +27,19 @@ var combineReducers = function(reducers) {
  */
 var createStore = function(reducer) {
   var state;
+  // This is where functions passed to store.subscribe will be stored
   var listeners = [];
 
   var getState = function() {
-    return state;
+    // Your Code Here
   };
 
   var dispatch = function(action) {
-    state = reducer(state, action);
-    listeners.forEach(function(listener) {
-      listener();
-    });
+    // Your Code Here
   };
 
   var subscribe = function(listener) {
-    listeners.push(listener);
-
-    return function() {
-      listeners = listeners.filter(function(l) {
-        l !== listener;
-      });
-    }
+    // Your Code Here
   };
 
   // Initializes state
